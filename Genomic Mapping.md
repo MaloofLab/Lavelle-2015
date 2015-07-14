@@ -120,21 +120,21 @@ For M82PE2:
         
 #### tie-1 and M82 pileup
 
-    samtools mpileup -B -l ../chr2.bed -f ../S_lycopersicum_chromosomes.2.40.fa ../PE1PE2_nodup.RG.realigned.bam  M82G_PE1PE2_rmdup.realigned.bam > PE1PE2_paired_M82G.realigned.mpileup
+    samtools mpileup -B -f ../S_lycopersicum_chromosomes.2.40.fa ../PE1PE2_nodup.RG.realigned.bam  M82G_PE1PE2_rmdup.realigned.bam > PE1PE2_paired_M82G.realigned.all.mpileup
     
-    java -Xmx3g -jar /usr/local/bin/VarScan.v2.3.5.jar mpileup2snp PE1PE2_paired_M82G.realigned.mpileup > PE1PE2_paired_M82G.realigned.varscan
+    java -Xmx3g -jar /usr/local/bin/VarScan.v2.3.5.jar mpileup2snp PE1PE2_paired_M82G.realigned.all.mpileup > PE1PE2_paired_M82G.realigned.all.varscan
     
 ### look for indels
 
-        java -Xmx3g -jar /usr/local/bin/VarScan.v2.3.5.jar mpileup2indel PE1PE2_paired_M82G.realigned.mpileup > PE1PE2_paired_M82G.realigned.varscan_indel
+        java -Xmx3g -jar /usr/local/bin/VarScan.v2.3.5.jar mpileup2indel PE1PE2_paired_M82G.realigned.all.mpileup > PE1PE2_paired_M82G.realigned.all.varscan_indel
 
 ### Generate bcf for SnpEff to use
 
     samtools mpileup -BgD -l ../chr2.bed -f ../S_lycopersicum_chromosomes.2.40.fa ../PE1PE2_nodup.RG.realigned.bam  M82G_PE1PE2_rmdup.realigned.bam > PE1PE2_paired_M82G.realigned.bcf  
  
-  bcftools view -Nv PE1PE2_paired_M82G.realigned.bcf   > PE1PE2_paired_M82G.realigned.vcf  
+    bcftools view -Nv PE1PE2_paired_M82G.realigned.bcf   > PE1PE2_paired_M82G.realigned.vcf  
   
-  java -Xmx3g -jar ~/ebs5//snpEff/snpEff.jar eff -c ~/ebs5/snpEff/snpEff.config Solyc2.40  PE1PE2_paired_M82G.realigned.vcf   >  annotated_PE1PE2_paired_M82G.realigned.vcf  
+    java -Xmx3g -jar ~/ebs5//snpEff/snpEff.jar eff -c ~/ebs5/snpEff/snpEff.config Solyc2.40  PE1PE2_paired_M82G.realigned.vcf   >  annotated_PE1PE2_paired_M82G.realigned.vcf  
   
   ### Generate tie-1 only bcf for SnpEff to use (probably there is a better way, but...)
   
@@ -142,7 +142,7 @@ For M82PE2:
       
        bcftools view -Nv tie1_only_PE1PE2_paired.realigned.bcf    > tie1_only_PE1PE2_paired.realigned.vcf   
   
-  java -Xmx3g -jar ~/ebs5//snpEff/snpEff.jar eff -c ~/ebs5/snpEff/snpEff.config -no-downstream -no-intergenic -t Solyc2.40  tie1_only_PE1PE2_paired.realigned.vcf   >  annotated_tie1_only_PE1PE2_paired.realigned.vcf
+      java -Xmx3g -jar ~/ebs5//snpEff/snpEff.jar eff -c ~/ebs5/snpEff/snpEff.config -no-downstream -no-intergenic -t Solyc2.40  tie1_only_PE1PE2_paired.realigned.vcf   >  annotated_tie1_only_PE1PE2_paired.realigned.vcf
 
 ### Further Analysis
 
