@@ -124,9 +124,6 @@ For M82PE2:
     
     java -Xmx3g -jar /usr/local/bin/VarScan.v2.3.5.jar mpileup2snp PE1PE2_paired_M82G.realigned.all.mpileup > PE1PE2_paired_M82G.realigned.all.varscan
     
-### look for indels
-
-        java -Xmx3g -jar /usr/local/bin/VarScan.v2.3.5.jar mpileup2indel PE1PE2_paired_M82G.realigned.all.mpileup > PE1PE2_paired_M82G.realigned.all.varscan_indel
 
 ### Generate bcf for SnpEff to use
 
