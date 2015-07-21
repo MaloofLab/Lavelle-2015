@@ -9,6 +9,7 @@ summary(tie1)
 head(tie1)
 tie1$gt <- paste("GA2ox",tie1$GA2,"_AG.2",tie1$AG,sep="")
 tie1$height <- tie1$epi + tie1$int1 + tie1$int2
+tie1$int.total <- tie1$int1 + tie1$int2
 ```
 
 Remove unused columns
@@ -49,7 +50,7 @@ Very strong effect and we can see the het effect also.
 lm2 <- lm(epi ~ AG,data=tie1)
 summary(lm2)
 ```
-Yes there is an affect here but probably due to linkage with GA2ox.  Test via additive model.
+Yes there is an effect here but probably due to linkage with GA2ox.  Test via additive model.
 
 ### Additive model
 ```{r}
@@ -73,6 +74,8 @@ lm5 <- lm(epi ~ gt,data=na.omit(tie1))
 summary(lm5)
 ```
 
+
+
 ## test for total height
 
 ### GA2oxidase only
@@ -87,7 +90,7 @@ Very strong effect and we can see het effect also.
 lm2 <- lm(height ~ AG,data=tie1)
 summary(lm2)
 ```
-Yes there is an affect here but probably due to linkage with GA2ox.  Test via additive model.
+Yes there is an effect here but probably due to linkage with GA2ox.  Test via additive model.
 
 ### Additive model
 ```{r}
@@ -109,3 +112,43 @@ Predicted on two-locus genotype
 lm5 <- lm(height ~ gt,data=na.omit(tie1))
 summary(lm5)
 ```
+
+
+
+## test for total internode
+
+### GA2oxidase only
+```{r}
+lm1 <- lm(int.total ~ GA2,data=tie1)
+summary(lm1)
+```
+Very strong effect and we can see het effect also.
+
+### Alpha-glucosidase only
+```{r}
+lm2 <- lm(int.total ~ AG,data=tie1)
+summary(lm2)
+```
+Yes there is an effect here but probably due to linkage with GA2ox.  Test via additive model.
+
+### Additive model
+```{r}
+lm3 <- lm(int.total ~ GA2 + AG,data=tie1)
+summary(lm3)
+```
+This confirms that when both loci are in the model that only GA2 genotype matters 
+
+### interaction model
+To test whether or not there is some wierd interaction between loci
+```{r}
+lm4 <- lm(int.total ~ GA2*AG,data=tie1)
+summary(lm4)
+```
+This argues that the alpha-glucosidase being het instead of Heinz decreases height in the presence of GA
+### an alternative
+Predicted on two-locus genotype
+```{r}
+lm5 <- lm(int.total ~ gt,data=na.omit(tie1))
+summary(lm5)
+```
+
