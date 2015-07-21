@@ -1,0 +1,111 @@
+## Tie1 F2s
+
+Quick analysis to determine if we should look at more F2s to distinguigh between GA2ox and the Alpha Glucosidase as causative for tie-1 phenotype
+
+Get the data and take a quick look
+```{r}
+tie1 <- read.csv("tie.F2s.csv",na.strings=c("NA","-"))
+summary(tie1)
+head(tie1)
+tie1$gt <- paste("GA2ox",tie1$GA2,"_AG.2",tie1$AG,sep="")
+tie1$height <- tie1$epi + tie1$int1 + tie1$int2
+```
+
+Remove unused columns
+```{r}
+tie1.small <- tie1[,!grepl("X",colnames(tie1))]
+#tie1.small <- tie1.small[tie1.small$first.leaf=="1",] #remove wierd plants where there are 2 leave at first node.
+head(tie1.small)
+```
+
+melt
+```{r}
+library(reshape2)
+tie1.melt <- melt(tie1.small,id.vars = c("plant","GA2","AG","gt","flat","first.leaf"),variable.name="organ")
+head(tie1.melt)
+```
+
+plot it
+```{r}
+library(ggplot2)
+pl <- ggplot(na.omit(tie1.melt),aes(x=gt,y=value))
+pl <- pl + geom_boxplot()
+pl <- pl + facet_wrap( ~ organ)
+pl <- pl + theme(axis.text.x  = element_text(angle=90, vjust=0.5))
+pl + geom_point()
+```
+
+## test it for epicotyl
+
+### GA2oxidase only
+```{r}
+lm1 <- lm(epi ~ GA2,data=tie1)
+summary(lm1)
+```
+Very strong effect and we can see the het effect also.
+
+### Alpha-glucosidase only
+```{r}
+lm2 <- lm(epi ~ AG,data=tie1)
+summary(lm2)
+```
+Yes there is an affect here but probably due to linkage with GA2ox.  Test via additive model.
+
+### Additive model
+```{r}
+lm3 <- lm(epi ~ GA2 + AG,data=tie1)
+summary(lm3)
+```
+This confirms that when both loci are in the model that only GA2 genotype matters 
+
+### interaction model
+To test whether or not there is some wierd interaction between loci
+```{r}
+lm4 <- lm(epi ~ GA2*AG,data=tie1)
+summary(lm4)
+```
+Still no evidence for alpha-glucosidase playing a role.
+
+### an alternative
+Predict on two-locus genotype
+```{r}
+lm5 <- lm(epi ~ gt,data=na.omit(tie1))
+summary(lm5)
+```
+
+## test for total height
+
+### GA2oxidase only
+```{r}
+lm1 <- lm(height ~ GA2,data=tie1)
+summary(lm1)
+```
+Very strong effect and we can see het effect also.
+
+### Alpha-glucosidase only
+```{r}
+lm2 <- lm(height ~ AG,data=tie1)
+summary(lm2)
+```
+Yes there is an affect here but probably due to linkage with GA2ox.  Test via additive model.
+
+### Additive model
+```{r}
+lm3 <- lm(height ~ GA2 + AG,data=tie1)
+summary(lm3)
+```
+This confirms that when both loci are in the model that only GA2 genotype matters 
+
+### interaction model
+To test whether or not there is some wierd interaction between loci
+```{r}
+lm4 <- lm(height ~ GA2*AG,data=tie1)
+summary(lm4)
+```
+This argues that the alpha-glucosidase being het instead of Heinz decreases height in the presence of GA
+### an alternative
+Predicted on two-locus genotype
+```{r}
+lm5 <- lm(height ~ gt,data=na.omit(tie1))
+summary(lm5)
+```
