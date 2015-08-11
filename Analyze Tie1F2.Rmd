@@ -105,7 +105,7 @@ To test whether or not there is some wierd interaction between loci
 lm4 <- lm(height ~ GA2*AG,data=tie1)
 summary(lm4)
 ```
-This argues that the alpha-glucosidase being het instead of Heinz decreases height in the presence of GA
+
 ### an alternative
 Predicted on two-locus genotype
 ```{r}
@@ -150,5 +150,36 @@ Predicted on two-locus genotype
 ```{r}
 lm5 <- lm(int.total ~ gt,data=na.omit(tie1))
 summary(lm5)
+```
+
+### make a figure
+
+```{r}
+#make a function for summarizing
+mean.sem <- function(x,na.rm=TRUE) {
+  if(na.rm) x <- na.omit(x)
+  mean.x <- mean(x)
+  sem.x <- sd(x)/sqrt(length(x))
+  data.frame(
+    y=mean.x,
+    ymin=mean.x-sem.x,
+    ymax=mean.x+sem.x)
+}
+
+#plot AG conditioned on GA2
+pl <- ggplot(data=na.omit(tie1),aes(x=AG,y=int.total))
+pl <- pl + geom_bar(stat="summary",fun.data="mean.sem",fill="skyblue")
+pl <- pl + geom_errorbar(stat="summary",fun.data="mean.sem",width=0.5)
+pl <- pl + facet_wrap( ~ GA2,nrow=1)
+pl + ylab("Total Internode Length") + xlab("Alpha-glucosidase Genotype")
+ggsave("AG2_total_internode.pdf",height=6,width=6)
+
+#plot GA2 conditions on AG
+pl <- ggplot(data=na.omit(tie1),aes(x=GA2,y=int.total))
+pl <- pl + geom_bar(stat="summary",fun.data="mean.sem",fill="seagreen")
+pl <- pl + geom_errorbar(stat="summary",fun.data="mean.sem",width=0.5)
+pl <- pl + facet_wrap( ~ AG,nrow=1)
+pl + ylab("Total Internode Length") + xlab("GA2 Oxidase 7/8 Genotype") 
+ggsave("GA2_total_internode.pdf",height=6,width=6)
 ```
 
