@@ -130,16 +130,22 @@ For M82PE2:
     samtools mpileup -BgD -l ../chr2.bed -f ../S_lycopersicum_chromosomes.2.40.fa ../PE1PE2_nodup.RG.realigned.bam  M82G_PE1PE2_rmdup.realigned.bam > PE1PE2_paired_M82G.realigned.bcf  
  
     bcftools view -Nv PE1PE2_paired_M82G.realigned.bcf   > PE1PE2_paired_M82G.realigned.vcf  
+
+But if we use the pre-built database in SnpEff we need to adjust the chromnames:
+
+    sed 's/SL2.40ch0*//' PE1PE2_paired_M82G.realigned.vcf  > PE1PE2_paired_M82G.realigned.renamed.vcf  
   
-    java -Xmx3g -jar ~/ebs5//snpEff/snpEff.jar eff -c ~/ebs5/snpEff/snpEff.config Solyc2.40  PE1PE2_paired_M82G.realigned.vcf   >  annotated_PE1PE2_paired_M82G.realigned.vcf  
+    java -Xmx3g -jar ../snpEff/snpEff.jar eff  SL2.40.26  PE1PE2_paired_M82G.realigned.renamed.vcf   >  annotated_PE1PE2_paired_M82G.realigned.renamed,vcf  
   
   ### Generate tie-1 only bcf for SnpEff to use (probably there is a better way, but...)
   
       samtools mpileup -BgD -l ../chr2.bed -f ../S_lycopersicum_chromosomes.2.40.fa ../PE1PE2_nodup.RG.realigned.bam   >  tie1_only_PE1PE2_paired.realigned.bcf  
       
        bcftools view -Nv tie1_only_PE1PE2_paired.realigned.bcf    > tie1_only_PE1PE2_paired.realigned.vcf   
+
+       sed 's/SL2.40ch0*//' tie1_only_PE1PE2_paired.realigned.vcf > tie1_only_PE1PE2_paired.realigned.renamed.vcf
   
-      java -Xmx3g -jar ~/ebs5//snpEff/snpEff.jar eff -c ~/ebs5/snpEff/snpEff.config -no-downstream -no-intergenic -t Solyc2.40  tie1_only_PE1PE2_paired.realigned.vcf   >  annotated_tie1_only_PE1PE2_paired.realigned.vcf
+      java -Xmx3g -jar ../snpEff/snpEff.jar eff  -no-downstream -no-intergenic -t SL2.40.26 tie1_only_PE1PE2_paired.realigned.renamed.vcf   >  annotated_tie1_only_PE1PE2_paired.realigned.renamed.vcf
 
 ### Further Analysis
 
