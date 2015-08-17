@@ -135,7 +135,7 @@ But if we use the pre-built database in SnpEff we need to adjust the chromnames:
 
     sed 's/SL2.40ch0*//' PE1PE2_paired_M82G.realigned.vcf  > PE1PE2_paired_M82G.realigned.renamed.vcf  
   
-    java -Xmx3g -jar ../snpEff/snpEff.jar eff  SL2.40.26  PE1PE2_paired_M82G.realigned.renamed.vcf   >  annotated_PE1PE2_paired_M82G.realigned.renamed,vcf  
+    java -Xmx3g -jar ../snpEff/snpEff.jar eff  SL2.40.26  PE1PE2_paired_M82G.realigned.renamed.vcf   >  annotated_PE1PE2_paired_M82G.realigned.renamed.vcf  
   
   ### Generate tie-1 only bcf for SnpEff to use (probably there is a better way, but...)
   
