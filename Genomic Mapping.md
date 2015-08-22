@@ -135,7 +135,7 @@ But if we use the pre-built database in SnpEff we need to adjust the chromnames:
 
     sed 's/SL2.40ch0*//' PE1PE2_paired_M82G.realigned.vcf  > PE1PE2_paired_M82G.realigned.renamed.vcf  
   
-    java -Xmx3g -jar ../snpEff/snpEff.jar eff  SL2.40.26  PE1PE2_paired_M82G.realigned.renamed.vcf   >  annotated_PE1PE2_paired_M82G.realigned.renamed.vcf  
+    java -Xmx3g -jar ../snpEff/snpEff.jar eff  SL2.40.26  PE1PE2_paired_M82G.realigned.renamed.vcf   >  annotated_PE1PE2_paired_M82G.realigned.renamed,vcf  
   
   ### Generate tie-1 only bcf for SnpEff to use (probably there is a better way, but...)
   
@@ -146,6 +146,13 @@ But if we use the pre-built database in SnpEff we need to adjust the chromnames:
        sed 's/SL2.40ch0*//' tie1_only_PE1PE2_paired.realigned.vcf > tie1_only_PE1PE2_paired.realigned.renamed.vcf
   
       java -Xmx3g -jar ../snpEff/snpEff.jar eff  -no-downstream -no-intergenic -t SL2.40.26 tie1_only_PE1PE2_paired.realigned.renamed.vcf   >  annotated_tie1_only_PE1PE2_paired.realigned.renamed.vcf
+
+
+## Redo with FreeBayes
+
+    bamaddrg -b M82G_PE1PE2_rmdup.realigned.bam -r M82 > M82G_PE1PE2_rmdup.realigned.rg.bam
+
+    freebayes -f --use-best-n-alleles 4 -C 5 ../ M82G_PE1PE2_rmdup.realigned.rg.bam ../ 
 
 ### Further Analysis
 
