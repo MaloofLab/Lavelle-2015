@@ -147,7 +147,6 @@ But if we use the pre-built database in SnpEff we need to adjust the chromnames:
   
       java -Xmx3g -jar ../snpEff/snpEff.jar eff  -no-downstream -no-intergenic -t SL2.40.26 tie1_only_PE1PE2_paired.realigned.renamed.vcf   >  annotated_tie1_only_PE1PE2_paired.realigned.renamed.vcf
 
-
 ## Redo with FreeBayes
 
     bamaddrg -b M82G_PE1PE2_rmdup.realigned.bam -r M82 > M82G_PE1PE2_rmdup.realigned.rg.bam
