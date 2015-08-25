@@ -25,3 +25,12 @@ I am going to treat these as SE reads because they aren't matched.
 ## heinz
 
     fastq-dump --gzip SRR404081
+
+    bwa mem -t 8 -R '@RG\tID:Heinz\tSM:Heinz' ../../S.lyc/S_lycopersicum_chromosomes.2.40.fa SRR404081.fastq.gz | samtools view -Sbu - | samtools rmdup - - | samtools sort -m 4000000000 - HeinzG_PE1PE2_rmdup
+
+## Call SNPs
+
+    freebayes-parallel <(fasta_generate_regions.py ref.fa.fai 100000) 36 \
+    -f ref.fa aln.bam >var.vcf
+
+    freebayes -f ../S.lyc/S_lycopersicum_chromosomes.2.40.fa tie1F2G/tie1_PE1PE2_rmdup.bam M82G/M82G_PE1PE2_rmdup.bam heinz/HeinzG_PE1PE2_rmdup.bam > tie1_M82_Heinz_fb.vcf
