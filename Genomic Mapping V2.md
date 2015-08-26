@@ -30,7 +30,8 @@ I am going to treat these as SE reads because they aren't matched.
 
 ## Call SNPs
 
-    freebayes-parallel <(fasta_generate_regions.py ref.fa.fai 100000) 36 \
-    -f ref.fa aln.bam >var.vcf
-
     freebayes -f ../S.lyc/S_lycopersicum_chromosomes.2.40.fa tie1F2G/tie1_PE1PE2_rmdup.bam M82G/M82G_PE1PE2_rmdup.bam heinz/HeinzG_PE1PE2_rmdup.bam > tie1_M82_Heinz_fb.vcf
+
+Do some filtering
+
+    vcfqualfilter -c 20 < tie1_M82_Heinz_fb.vcf > tie1_M82_Heinz_fb.filter20.vcf
