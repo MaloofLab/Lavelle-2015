@@ -101,12 +101,12 @@ qplot(data.small$QUAL,geom="histogram") + xlim(0,200)
 #instead of using a smoothed line, compute running average.  The reason is that 
 #smoothed lines are overly influenced by the SNP density
 
+data.small$tie1.percent.run10 <- caTools::runmean(data.small$tie1.percent.alt,10)
 data.small$tie1.percent.run20 <- caTools::runmean(data.small$tie1.percent.alt,20)
 
 data.small <- data.small[data.small$CHROM!="SL2.40ch00",]
-##plot some of this 
 
-#more general plotting
+##plot some of this 
 
 plotSnp <- function(start=NULL,finish=NULL,data=data.small,title=NULL,alpha=0.5,chrom=NULL) {
   if(! is.null(chrom)) {
@@ -130,15 +130,18 @@ plotSnp <- function(start=NULL,finish=NULL,data=data.small,title=NULL,alpha=0.5,
   print(pl)
 }
 
-  
 plotSnp(title="tie1 F2 BSA Analysis")
 ggsave("tie1_F2_BSA_All_Chroms.pdf",height=11,width=8.5)
 
 plotSnp(title="tie1 F2 BSA Analysis Chrom 2",chrom="SL2.40ch02") #essentially two regions, around 3.4- 3.6 and 3.9
 ggsave("tie1_F2_BSA_Ch02.pdf",width=8.5,height=2)
 
-plotSnp(2.8e07,4.2e07,title="Chrom 2 Enlargement",chrom="SL2.40ch02")
+plotSnp(3e07,4.5e07,title="Chrom 2 Enlargement",chrom="SL2.40ch02")
 ggsave("tie1_F2_BSA_Ch02_enlargement.pdf",width=8.5,height=2)
+
+plotSnp(3.3e07,3.6e07,title="Chrom 2 Enlargement Region 1",chrom="SL2.40ch02")
+
+plotSnp(3.8e07,4.0e07,title="Chrom 2 Enlargement Region 2",chrom="SL2.40ch02")
 
 #get nearby genes
 
@@ -166,10 +169,10 @@ head(genes.rd)
 
 #make it a ranged data object
 
-region1.rd <- RangedData(IRanges(start=3.3e07,end=3.6e07,names="tie1Region1"),space="SL2.40ch02")
+region1.rd <- RangedData(IRanges(start=3.45e07,end=3.55e07,names="tie1Region1"),space="SL2.40ch02")
 region1.rd
 
-region2.rd <- RangedData(IRanges(start=3.9e07,end=4.1e07,names="tie1Region2"),space="SL2.40ch02")
+region2.rd <- RangedData(IRanges(start=3.85e07,end=3.95e07,names="tie1Region2"),space="SL2.40ch02")
 
 overlaps1 <- as.data.frame(as.matrix(findOverlaps(ranges(region1.rd),ranges(genes.rd))))
 
