@@ -5,6 +5,7 @@ library(ggplot2)
 library(caTools) #Could also try using IRanges or zoo packages
 library(Biostrings)
 library(plyr)
+library(reshape2)
 
 setwd("~/git/Lavelle-tie1--2015/")
 
@@ -98,20 +99,35 @@ qplot(data.small$QUAL,geom="histogram") + xlim(0,200)
 
 
 #instead of using a smoothed line, compute running average.  The reason is that 
-#smoothed lines are overly infleunced by the SNP density
+#smoothed lines are overly influenced by the SNP density
 
-data.small$tie1.percent.run <- caTools::runmean(data.small$tie1.percent.alt,20)
-#data.small$tie1.het.Pvalue.run <- caTools::runmean(data.small$tie1.het.Pvalue,5) #should do this as 
+data.small$tie1.percent.run50 <- caTools::runmean(data.small$tie1.percent.alt,50)
+data.small$tie1.percent.run20 <- caTools::runmean(data.small$tie1.percent.alt,20)
+data.small$tie1.percent.run10 <- caTools::runmean(data.small$tie1.percent.alt,10)
+data.small$tie1.percent.run05 <- caTools::runmean(data.small$tie1.percent.alt,5)
 
-data.small <- data.small[data.small$Chrom!="SL2.40ch00",]
+
+data.small <- data.small[data.small$CHROM!="SL2.40ch00",]
 ##plot some of this 
+
+# exam the effect of different running averages
+data.pl <- melt(data.small[,c("CHROM","POS","tie1.percent.alt","tie1.percent.run10","tie1.percent.run20","tie1.percent.run05","tie1.percent.run50")],
+                id.vars = c("CHROM","POS","tie1.percent.alt"),variable.name="run_length",value.name="Percent_M82")
+
+pl <- ggplot(data=data.pl[data.pl$CHROM %in% c("SL2.40ch02","SL2.40ch09"),],aes(x=POS,y=Percent_M82))
+pl <- pl + geom_point(aes(y=tie1.percent.alt),alpha=0.5)
+pl <- pl + facet_grid(run_length ~ CHROM)
+pl <- pl + geom_line(lwd=2,color="skyblue")
+pl
+
+#more general plotting
 
 plotSnp <- function(start=NULL,finish=NULL,data=data.small,title=NULL,alpha=0.5,chrom=NULL) {
   if(! is.null(chrom)) {
-    data <- data[data$Chrom==chrom,]
+    data <- data[data$CHROM==chrom,]
   }
-  pl <- ggplot(data=data,mapping=aes(x=Position))
-  pl <- pl + geom_point(aes(y=tie1.percent2),alpha=alpha)
+  pl <- ggplot(data=data,mapping=aes(x=POS))
+  pl <- pl + geom_point(aes(y=tie1.percent.alt),alpha=alpha)
   if(!is.null(start) & ! is.null(finish)) {
     pl <- pl + xlim(c(start,finish))
     #pl <- pl + scale_size_discrete(range=c(2,6))
@@ -120,22 +136,23 @@ plotSnp <- function(start=NULL,finish=NULL,data=data.small,title=NULL,alpha=0.5,
     pl <- pl + ggtitle(title)
   }
   if(is.null(chrom)) {
-    pl <- pl + facet_wrap(~ Chrom, ncol = 2)
-    #pl <- pl + geom_smooth(aes(y=tie1.percent2),color="skyblue",lwd=1) + ylim(0,100)
+    pl <- pl + facet_wrap(~ CHROM, ncol = 2)
+    #pl <- pl + geom_smooth(aes(y=tie1.percent.alt),color="skyblue",lwd=1) + ylim(0,100)
 }# else {
-  pl <- pl + geom_line(aes(y=tie1.percent.run),color="skyblue",lwd=1)
+  pl <- pl + geom_line(aes(y=tie1.percent.run20),color="skyblue",lwd=1)
 #}
   print(pl)
 }
+
   
 plotSnp(title="tie1 F2 BSA Analysis")
 ggsave("tie1_F2_BSA_All_Chroms.pdf",height=11,width=8.5)
 
 plotSnp(title="tie1 F2 BSA Analysis Chrom 2",chrom="SL2.40ch02") #essentially two regions, around 3.4- 3.6 and 3.9
-ggsave("tie1_F2_BSA_Ch02.pdf",width=4,height=4)
+ggsave("tie1_F2_BSA_Ch02.pdf",width=8.5,height=2)
 
 plotSnp(2.8e07,4.2e07,title="Chrom 2 Enlargement",chrom="SL2.40ch02")
-ggsave("tie1_F2_BSA_Ch02.pdf",width=4,height=4)
+ggsave("tie1_F2_BSA_Ch02_eblargement.pdf",width=8.5,height=2)
 
 #get nearby genes
 
