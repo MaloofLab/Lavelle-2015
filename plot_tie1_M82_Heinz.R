@@ -101,24 +101,10 @@ qplot(data.small$QUAL,geom="histogram") + xlim(0,200)
 #instead of using a smoothed line, compute running average.  The reason is that 
 #smoothed lines are overly influenced by the SNP density
 
-data.small$tie1.percent.run50 <- caTools::runmean(data.small$tie1.percent.alt,50)
 data.small$tie1.percent.run20 <- caTools::runmean(data.small$tie1.percent.alt,20)
-data.small$tie1.percent.run10 <- caTools::runmean(data.small$tie1.percent.alt,10)
-data.small$tie1.percent.run05 <- caTools::runmean(data.small$tie1.percent.alt,5)
-
 
 data.small <- data.small[data.small$CHROM!="SL2.40ch00",]
 ##plot some of this 
-
-# exam the effect of different running averages
-data.pl <- melt(data.small[,c("CHROM","POS","tie1.percent.alt","tie1.percent.run10","tie1.percent.run20","tie1.percent.run05","tie1.percent.run50")],
-                id.vars = c("CHROM","POS","tie1.percent.alt"),variable.name="run_length",value.name="Percent_M82")
-
-pl <- ggplot(data=data.pl[data.pl$CHROM %in% c("SL2.40ch02","SL2.40ch09"),],aes(x=POS,y=Percent_M82))
-pl <- pl + geom_point(aes(y=tie1.percent.alt),alpha=0.5)
-pl <- pl + facet_grid(run_length ~ CHROM)
-pl <- pl + geom_line(lwd=2,color="skyblue")
-pl
 
 #more general plotting
 
@@ -152,7 +138,7 @@ plotSnp(title="tie1 F2 BSA Analysis Chrom 2",chrom="SL2.40ch02") #essentially tw
 ggsave("tie1_F2_BSA_Ch02.pdf",width=8.5,height=2)
 
 plotSnp(2.8e07,4.2e07,title="Chrom 2 Enlargement",chrom="SL2.40ch02")
-ggsave("tie1_F2_BSA_Ch02_eblargement.pdf",width=8.5,height=2)
+ggsave("tie1_F2_BSA_Ch02_enlargement.pdf",width=8.5,height=2)
 
 #get nearby genes
 
