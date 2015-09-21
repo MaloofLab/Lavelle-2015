@@ -38,7 +38,7 @@ Do some filtering
 
 ## Annotation
 
-making my own genome database file for SnpEff seems not to be working well.  Using the pre-built one is annoying because the chromosome names are different, but that is what I am going to try.  This requires changing the chromosome names in the vcf file to match.
+Making my own genome database file for SnpEff seems not to be working well.  Using the pre-built one is annoying because the chromosome names are different, but that is what I am going to try.  This requires changing the chromosome names in the vcf file to match.
 
 Download pre-built database: 
     
@@ -46,6 +46,10 @@ Download pre-built database:
 
 Take a look at nomenclature
 
-    java -jar /usr/local/bin/snpEff.jar dump SL2.40.26 | head -n 30
+    java -jar /usr/local/bin/snpEff.jar dump SL2.40.26 | more
 
-    java -jar /usr/local/bin/snpEff.jar ann -fi tie1_region.bed  -noStats -no-intergenic -no-upstream -no-downstream -v SL2.40.26 tie1_M82_Heinz_fb.filter20.vcf.gz > annotated.tie1_M82_Heinz_fb.filter20.vcf
+Chromosomes are labelled from 1 to 12.  Chromosome 0 is ''
+
+    gunzip -c tie1_M82_Heinz_fb.filter20.vcf.gz |  awk '{ sub(/^SL2.40ch0{0,2}/,""); print }' | gzip -c > tie1_M82_Heinz_fb.filter20.vcf.sub_chrom.gz
+
+    java -jar /usr/local/bin/snpEff.jar ann -t -fi tie1_region.bed  -noStats -no-intergenic -no-upstream -no-downstream -v SL2.40.26 tie1_M82_Heinz_fb.filter20.vcf.sub_chrom.gz > annotated.tie1_M82_Heinz_fb.filter20.vcf
