@@ -35,3 +35,17 @@ I am going to treat these as SE reads because they aren't matched.
 Do some filtering
 
     vcfqualfilter -c 20 < tie1_M82_Heinz_fb.vcf > tie1_M82_Heinz_fb.filter20.vcf
+
+## Annotation
+
+making my own genome database file for SnpEff seems not to be working well.  Using the pre-built one is annoying because the chromosome names are different, but that is what I am going to try.  This requires changing the chromosome names in the vcf file to match.
+
+Download pre-built database: 
+    
+    java -jar /usr/local/bin/snpEff.jar download -v SL2.40.26
+
+Take a look at nomenclature
+
+    java -jar /usr/local/bin/snpEff.jar dump SL2.40.26 | head -n 30
+
+    java -jar /usr/local/bin/snpEff.jar ann -fi tie1_region.bed  -noStats -no-intergenic -no-upstream -no-downstream -v SL2.40.26 tie1_M82_Heinz_fb.filter20.vcf.gz > annotated.tie1_M82_Heinz_fb.filter20.vcf
