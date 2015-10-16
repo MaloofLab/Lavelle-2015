@@ -112,7 +112,7 @@ plotSnp <- function(start=NULL,finish=NULL,data=data.small,title=NULL,alpha=0.5,
   if(! is.null(chrom)) {
     data <- data[data$CHROM==chrom,]
   }
-  pl <- ggplot(data=data,mapping=aes(x=POS))
+  pl <- ggplot(data=data,mapping=aes(x=POS/1e6))
   pl <- pl + geom_point(aes(y=tie1.percent.alt),alpha=alpha)
   if(!is.null(start) & ! is.null(finish)) {
     pl <- pl + xlim(c(start,finish))
@@ -127,11 +127,16 @@ plotSnp <- function(start=NULL,finish=NULL,data=data.small,title=NULL,alpha=0.5,
 }# else {
   pl <- pl + geom_line(aes(y=tie1.percent.run20),color="skyblue",lwd=1)
 #}
+  pl <- pl + ylab("Percent M82") + xlab("Position (Mbp)")
+  pl <- pl + theme(axis.text = element_text(size=10))
+  pl <- pl + theme(axis.title = element_text(size=12))
   print(pl)
 }
 
 plotSnp(title="tie1 F2 BSA Analysis")
 ggsave("tie1_F2_BSA_All_Chroms.pdf",height=11,width=8.5)
+ggsave("tie1_F2_BSA_All_Chroms.tiff",height=10,width=6.6)
+
 
 plotSnp(title="tie1 F2 BSA Analysis Chrom 2",chrom="SL2.40ch02") #essentially two regions, around 3.4- 3.6 and 3.9
 ggsave("tie1_F2_BSA_Ch02.pdf",width=8.5,height=2)
