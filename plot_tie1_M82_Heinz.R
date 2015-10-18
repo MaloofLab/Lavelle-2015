@@ -128,6 +128,7 @@ plotSnp <- function(start=NULL,finish=NULL,data=data.small,title=NULL,alpha=0.5,
   pl <- pl + geom_line(aes(y=tie1.percent.run20),color="skyblue",lwd=1)
 #}
   pl <- pl + ylab("Percent M82") + xlab("Position (Mbp)")
+  pl <- pl + theme_bw()
   pl <- pl + theme(axis.text = element_text(size=10))
   pl <- pl + theme(axis.title = element_text(size=12))
   print(pl)
