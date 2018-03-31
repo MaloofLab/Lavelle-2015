@@ -1,0 +1,46 @@
+---
+title: "Complementation Graph"
+author: "Julin N Maloof"
+date: "3/31/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+data <- read_csv("tie1comp.csv")
+data
+```
+
+```{r}
+unique(data$line_1)
+data$line_1 <- factor(data$line_1, levels = c("tie1","2","4","M82"))
+lm1 <- lm(length~line_1,data=data)
+summary(lm1)
+```
+
+```{r}
+data$line_1 <- relevel(data$line_1, ref="M82")
+lm2 <- lm(length~line_1,data=data)
+summary(lm2)
+```
+
+
+```{r}
+data %>% group_by(line_1) %>%
+  summarize(mean_expression=mean(expression), 
+            mean_length=mean(length),
+            exp_error=sd(expression)/sqrt(n()),
+            length_error=sd(length)/sqrt(n())) %>%
+
+
+ggplot(aes(x=mean_expression,y=mean_length,color=line_1,fill=line_1) )+
+  geom_point() +
+  geom_errorbar(aes(ymax=mean_length+length_error,ymin=mean_length-length_error)) +
+  geom_errorbarh(aes(xmax=mean_expression+exp_error,xmin=mean_expression-exp_error))
+
+```
+
