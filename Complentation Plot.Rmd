@@ -12,7 +12,10 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(stringr)
-data <- read_csv("tie1comp.csv") %>% mutate(line_1=str_replace(line_1,"(^[24])","GA2ox7-\\1"))
+data <- read_csv("tie1comp.csv") %>% 
+  filter(!is.na(line_1)) %>%
+  mutate(line_1=str_replace(line_1,"(^[24])","GA2ox7-\\1")) %>%
+  mutate(length=ifelse(str_detect(line,"mix"),NA,length))
 data
 ```
 
@@ -33,20 +36,21 @@ summary(lm2)
 ```{r}
 data %>% mutate(line_1=relevel(line_1,ref="tie1")) %>%
   group_by(line_1) %>%
-  summarize(mean_expression=mean(expression), 
-            mean_length=mean(length),
-            exp_error=sd(expression)/sqrt(n()),
-            length_error=sd(length)/sqrt(n())) %>%
-
-
-ggplot(aes(x=mean_expression,y=mean_length,color=line_1,fill=line_1,shape=line_1) )+
+  summarize(mean_expression=mean(expression,na.rm=TRUE), 
+            mean_length=mean(length,na.rm=TRUE),
+            exp_error=sd(expression,na.rm=TRUE)/sqrt(length(na.omit(expression))),
+            length_error=sd(length,na.rm=TRUE)/sqrt(length(na.omit(length)))) %>%
+ggplot(aes(x=mean_expression,y=mean_length,color=line_1,shape=line_1) )+
   geom_point(size=3) +
-  geom_errorbar(aes(ymax=mean_length+length_error,ymin=mean_length-length_error)) +
-  geom_errorbarh(aes(xmax=mean_expression+exp_error,xmin=mean_expression-exp_error)) +
+  geom_errorbar(aes(ymax=mean_length+length_error,ymin=mean_length-length_error),width=.35) +
+  geom_errorbarh(aes(xmax=mean_expression+exp_error,xmin=mean_expression-exp_error),height=1.8) +
   scale_shape_manual(values=15:18) +
+  scale_color_manual(values=c("M82"="grey80","tie1"="grey20","GA2ox7-2"="grey50","GA2ox7-4"="grey50")) +
   xlab("Relative Expression Level") +
-  ylab("Epicotyl Length (cm)") +
+  ylab("Epicotyl Length (mm)") +
+  theme_bw() +
   theme(legend.title = element_blank())
+ggsave("~/Google Drive/tie paper resubmission/ComplementationFigure.pdf",height=2.75,width=4)
 
 ```
 
