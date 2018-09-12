@@ -1,0 +1,70 @@
+"Supplemental Table 1. Stats from linear regression analysis of dose response assays.  Separate models were fit for each organ.  GA doses were sqrt transformed and PAC doses were increased by 0.01 and log10 transformed to increase linearity.   The ""genotypetie1:sqrt(treatment)"" and ""genotypetie1:log10(treatment + 0.01)"" terms are used to test whether or not tie1 showed a significantly different response to the treatment as compared to M82.",,,,,,
+,,,,,,
+treatment,model,organ,term,p.value,estimate,std.error
+GA3,internode.length ~ genotype*sqrt(treatment),epicotyl,(Intercept),6.02E-11,18.15,2.09
+GA3,internode.length ~ genotype*sqrt(treatment),epicotyl,genotypetie1,3.95E-05,13.61,2.96
+GA3,internode.length ~ genotype*sqrt(treatment),epicotyl,genotypetie1:sqrt(treatment),6.62E-01,0.63,1.44
+GA3,internode.length ~ genotype*sqrt(treatment),epicotyl,sqrt(treatment),3.99E-02,2.13,1.00
+GA3,internode.length ~ genotype*sqrt(treatment),internode1,(Intercept),3.64E-07,8.33,1.38
+GA3,internode.length ~ genotype*sqrt(treatment),internode1,genotypetie1,5.36E-03,5.76,1.96
+GA3,internode.length ~ genotype*sqrt(treatment),internode1,genotypetie1:sqrt(treatment),4.75E-01,-0.69,0.95
+GA3,internode.length ~ genotype*sqrt(treatment),internode1,sqrt(treatment),5.20E-03,1.96,0.66
+GA3,internode.length ~ genotype*sqrt(treatment),internode2,(Intercept),3.50E-02,2.97,1.36
+GA3,internode.length ~ genotype*sqrt(treatment),internode2,genotypetie1,6.07E-03,5.60,1.94
+GA3,internode.length ~ genotype*sqrt(treatment),internode2,genotypetie1:sqrt(treatment),8.90E-02,-1.64,0.94
+GA3,internode.length ~ genotype*sqrt(treatment),internode2,sqrt(treatment),5.50E-03,1.92,0.66
+GA3,internode.length ~ genotype*sqrt(treatment),internode3,(Intercept),5.00E-01,0.49,0.73
+GA3,internode.length ~ genotype*sqrt(treatment),internode3,genotypetie1,3.35E-01,1.01,1.03
+GA3,internode.length ~ genotype*sqrt(treatment),internode3,genotypetie1:sqrt(treatment),2.85E-01,-0.54,0.50
+GA3,internode.length ~ genotype*sqrt(treatment),internode3,sqrt(treatment),1.73E-03,1.17,0.35
+,,,,,,
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole1,(Intercept),3.89E-18,27.94,1.90
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole1,genotypetie1,9.92E-01,-0.03,2.70
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole1,genotypetie1:sqrt(treatment),5.55E-01,-0.78,1.31
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole1,sqrt(treatment),2.04E-01,1.18,0.91
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole2,(Intercept),4.31E-09,14.99,2.03
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole2,genotypetie1,1.09E-02,7.70,2.89
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole2,genotypetie1:sqrt(treatment),7.46E-02,-2.57,1.40
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole2,sqrt(treatment),5.38E-02,1.94,0.98
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole3,(Intercept),2.24E-03,5.23,1.61
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole3,genotypetie1,2.87E-01,2.46,2.28
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole3,genotypetie1:sqrt(treatment),2.21E-01,-1.38,1.11
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole3,sqrt(treatment),7.92E-03,2.15,0.77
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole4,(Intercept),1.39E-01,2.36,1.57
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole4,genotypetie1,7.84E-01,0.61,2.22
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole4,genotypetie1:sqrt(treatment),3.45E-01,-1.03,1.08
+GA3,petiole.length ~ genotype*sqrt(treatment),petiole4,sqrt(treatment),4.25E-02,1.57,0.75
+,,,,,,
+PAC,internode.length ~ genotype*log10(treatment+.01),epicotyl,(Intercept),9.71E-04,12.22,3.58
+PAC,internode.length ~ genotype*log10(treatment+.01),epicotyl,genotypetie1,4.58E-02,10.46,5.16
+PAC,internode.length ~ genotype*log10(treatment+.01),epicotyl,genotypetie1:log10(treatment + 0.01),8.56E-02,-5.28,3.04
+PAC,internode.length ~ genotype*log10(treatment+.01),epicotyl,log10(treatment + 0.01),6.15E-02,-4.00,2.11
+PAC,internode.length ~ genotype*log10(treatment+.01),internode1,(Intercept),5.68E-02,6.04,3.13
+PAC,internode.length ~ genotype*log10(treatment+.01),internode1,genotypetie1,7.10E-01,1.68,4.51
+PAC,internode.length ~ genotype*log10(treatment+.01),internode1,genotypetie1:log10(treatment + 0.01),4.51E-03,-7.74,2.66
+PAC,internode.length ~ genotype*log10(treatment+.01),internode1,log10(treatment + 0.01),2.53E-02,-4.20,1.85
+PAC,internode.length ~ genotype*log10(treatment+.01),internode2,(Intercept),5.34E-01,1.95,3.13
+PAC,internode.length ~ genotype*log10(treatment+.01),internode2,genotypetie1,7.70E-01,-1.32,4.51
+PAC,internode.length ~ genotype*log10(treatment+.01),internode2,genotypetie1:log10(treatment + 0.01),1.72E-03,-8.57,2.65
+PAC,internode.length ~ genotype*log10(treatment+.01),internode2,log10(treatment + 0.01),1.26E-01,-2.85,1.84
+PAC,internode.length ~ genotype*log10(treatment+.01),internode3,(Intercept),8.67E-01,-0.38,2.24
+PAC,internode.length ~ genotype*log10(treatment+.01),internode3,genotypetie1,2.16E-01,-4.03,3.24
+PAC,internode.length ~ genotype*log10(treatment+.01),internode3,genotypetie1:log10(treatment + 0.01),7.75E-03,-5.18,1.90
+PAC,internode.length ~ genotype*log10(treatment+.01),internode3,log10(treatment + 0.01),2.28E-01,-1.60,1.32
+,,,,,,
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole1,(Intercept),1.27E-11,29.15,3.76
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole1,genotypetie1,4.86E-01,-3.79,5.41
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole1,genotypetie1:log10(treatment + 0.01),3.41E-01,-3.05,3.19
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole1,log10(treatment + 0.01),3.12E-02,-4.84,2.21
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole2,(Intercept),2.27E-07,19.98,3.57
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole2,genotypetie1,9.64E-01,0.23,5.14
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole2,genotypetie1:log10(treatment + 0.01),2.91E-01,-3.22,3.02
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole2,log10(treatment + 0.01),2.00E-01,-2.72,2.10
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole3,(Intercept),1.15E-01,6.68,4.19
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole3,genotypetie1,7.14E-01,2.22,6.05
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole3,genotypetie1:log10(treatment + 0.01),5.05E-01,-2.38,3.56
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole3,log10(treatment + 0.01),1.03E-01,-4.07,2.47
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole4,(Intercept),4.40E-01,3.37,4.35
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole4,genotypetie1,2.37E-01,-7.45,6.27
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole4,genotypetie1:log10(treatment + 0.01),1.03E-01,-6.06,3.69
+PAC,petiole.length ~ genotype*log10(treatment+.01),petiole4,log10(treatment + 0.01),6.02E-01,-1.34,2.56

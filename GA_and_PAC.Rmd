@@ -1,0 +1,303 @@
+---
+title: "PAC_and_GA"
+author: "Julin N Maloof"
+date: "9/10/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Libraries
+```{r}
+library(tidyverse)
+```
+
+## Data Import
+
+```{r}
+pac <- read_csv("pacdosefull.csv") %>%
+  select(-starts_with("X"))
+pac
+
+ga <- read_csv("GAdose0.3.10.csv") %>%
+  select(-starts_with("X"))
+ga
+```
+
+## plot ga
+
+```{r}
+ga.l <- ga %>% 
+  gather(key="organ", value="length", -genotype, -treatment, -number, -day) %>%
+  filter(day==28)
+
+ga.l %>%
+  filter(day==28) %>%
+  ggplot(aes(x=log10(treatment+0.1),y=length,color=genotype)) +
+  geom_smooth(method="lm") +
+  geom_point() +
+  facet_grid(~organ)
+```
+
+```{r}
+sem <- function(x) {
+  x <- na.omit(x)
+  sd(x)/sqrt(length(x))
+}
+
+ga.l %>%
+  filter(!is.na(length), str_detect(organ,"petiole")) %>%
+  group_by(genotype,organ,treatment) %>%
+  summarize(sem=sem(length), length=mean(length)) %>%
+  ggplot(aes(x=treatment,y=length,ymax=length+sem,ymin=length-sem,color=genotype)) +
+  geom_vline(xintercept = 0, color="grey90") +
+  geom_line(size=1) +
+  geom_point() +
+  geom_errorbar(width=.5) +
+  facet_grid(~organ) +
+  scale_x_sqrt() +
+  ggtitle("petiole response to GA") +
+  scale_shape_manual(values=c("M82"=15,"tie1"=16)) +
+  scale_color_manual(values=c("M82"="grey80","tie1"="grey20")) +
+  ylab("Length (mm)") +
+  xlab("GA") + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=90))
+ggsave("~/Google Drive/tie paper resubmission/Files for revision /GApetiole.pdf",height=2,width=6)
+
+
+ga.l %>%
+  filter(!is.na(length), str_detect(organ,"epicotyl|internode")) %>%
+  group_by(genotype,organ,treatment) %>%
+  summarize(sem=sem(length), length=mean(length)) %>%
+  ggplot(aes(x=treatment,y=length,ymax=length+sem,ymin=length-sem,color=genotype)) +
+  geom_vline(xintercept = 0, color="grey90") +
+  geom_line(size=1) +
+  geom_point() +
+  geom_errorbar(width=.5) +
+  facet_grid(~organ) +
+  scale_x_sqrt() +
+  ggtitle("stem response to GA")  + 
+  scale_shape_manual(values=c("M82"=15,"tie1"=16)) +
+  scale_color_manual(values=c("M82"="grey80","tie1"="grey20")) +
+  ylab("Length (mm)") +
+  xlab("GA") +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=90))
+ggsave("~/Google Drive/tie paper resubmission/Files for revision /GAinternode.pdf",height=2,width=6)
+
+```
+
+lm plots
+
+```{r}
+ga.l %>%
+  filter(!is.na(length), str_detect(organ,"petiole")) %>%
+  ggplot(aes(x=treatment,y=length,color=genotype)) +
+  geom_smooth(method="lm") +
+  geom_point() +
+  facet_grid(~organ) +
+  scale_x_sqrt()
+
+ga.l %>%
+  filter( !is.na(length), str_detect(organ,"epicotyl|internode")) %>%
+  ggplot(aes(x=treatment,y=length,color=genotype)) +
+  geom_smooth(method="lm") +
+  geom_point() +
+  facet_grid(~organ)
+```
+
+
+```{r}
+ga.t <- ga.l %>%
+  filter(!is.na(length), str_detect(organ,"petiole")) %>%
+  group_by(organ,treatment) %>%
+  nest() %>%
+  mutate(t.pval=map_dbl(data,function(x) t.test(x$length~x$genotype)$p.value)) %>%
+  arrange(t.pval)
+
+ga.t
+
+```
+
+lm stats for petiole
+```{r}
+
+ga.lm.petiole <- ga.l %>%
+  filter(!is.na(length), str_detect(organ,"petiole")) %>%
+  group_by(organ) %>%
+  nest() %>%
+  mutate(model.fit=map(data,function(x) lm(length~genotype*sqrt(treatment),data=x)),
+         glance=map(model.fit, broom::tidy) )
+
+ga.lm.petiole.pvals <- ga.lm.petiole %>% unnest(glance) %>%
+  arrange(organ,term) %>%
+  select(organ, term, p.value, estimate, std.error)
+
+ga.lm.petiole.pvals %>% filter(str_detect(term,fixed("genotypetie1:sqrt(treatment)")))
+```
+
+lm stats for internode
+```{r}
+
+ga.lm.internode <- ga.l %>%
+  filter(day==28, !is.na(length), str_detect(organ,"epicotyl|internode")) %>%
+  group_by(organ) %>%
+  nest() %>%
+  mutate(model.fit=map(data,function(x) lm(length~genotype*sqrt(treatment),data=x)),
+         glance=map(model.fit, broom::tidy) )
+
+ga.lm.internode.pvals <- ga.lm.internode %>% unnest(glance) %>%
+  arrange(organ,term) %>%
+  select(organ, term, p.value, estimate, std.error)
+
+ga.lm.internode.pvals %>% filter(str_detect(term,fixed("genotypetie1:sqrt(treatment)")))
+```
+
+# pac
+
+## plot pac
+
+```{r}
+pac.l <- pac %>% 
+  gather(key="organ", value="length", -genotype, -treatment, -p, -day, -notes) %>%
+  filter(day==28) %>%
+   mutate(organ=str_replace(organ,"pet","petiole"),
+         genotype=str_replace(genotype,"M","M82"),
+         genotype=str_replace(genotype,"T","tie1"),
+         organ=str_replace(organ,"int","internode"),
+         organ=str_replace(organ,"epi","epicotyl"))
+  
+
+
+pac.l %>%
+  ggplot(aes(x=log10(treatment+0.1),y=length,color=genotype)) +
+  geom_smooth(method="lm") +
+  geom_point() +
+  facet_grid(~organ, scale="free_y")
+```
+
+```{r}
+pac.l %>%
+  filter(!is.na(length), str_detect(organ,"pet")) %>%
+  group_by(genotype,organ,treatment) %>%
+  summarize(sem=sem(length), length=mean(length)) %>%
+  ggplot(aes(x=treatment+.001,y=length,ymax=length+sem,ymin=length-sem,color=genotype)) +
+  geom_line(size=1) +
+  geom_point() +
+  geom_errorbar(width=.2) +
+  facet_grid(~organ) +
+  scale_x_log10(breaks=c(0.001,0.01,0.1), labels=c("0","0.01","0.1")) +
+  ggtitle("stem response to GA")  + 
+  scale_shape_manual(values=c("M82"=15,"tie1"=16)) +
+  scale_color_manual(values=c("M82"="grey80","tie1"="grey20")) +
+  ylab("Length (mm)") +
+  xlab("pac") + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=90))  +
+  ggtitle("petiole response to pac")
+ggsave("~/Google Drive/tie paper resubmission/Files for revision /PACpetiole.pdf",height=2,width=6)
+
+pac.l %>%
+  filter(!is.na(length), str_detect(organ,"epi|int")) %>%
+  group_by(genotype,organ,treatment) %>%
+  summarize(sem=sem(length), length=mean(length)) %>%
+  ggplot(aes(x=treatment+.001,y=length,ymax=length+sem,ymin=length-sem,color=genotype)) +
+  geom_line(size=1) +
+  geom_point() +
+  geom_errorbar(width=.2) +
+  facet_grid(~organ) +
+  scale_x_log10(breaks=c(0.001,0.01,0.1), labels=c("0","0.01","0.1")) +
+  ggtitle("stem response to GA")  + 
+  scale_shape_manual(values=c("M82"=15,"tie1"=16)) +
+  scale_color_manual(values=c("M82"="grey80","tie1"="grey20")) +
+  ylab("Length (mm)") +
+  xlab("pac") + 
+  theme_bw() +
+  theme(axis.text.x = element_text(angle=90))  +
+    ggtitle("petiole response to pac")
+ggsave("~/Google Drive/tie paper resubmission/Files for revision /PACinternode.pdf",height=2,width=6)
+
+
+
+```
+
+lm plots
+
+```{r}
+pac.l %>%
+  filter(!is.na(length), str_detect(organ,"pet")) %>%
+  ggplot(aes(x=treatment+.01,y=length,color=genotype)) +
+  geom_smooth(method="lm") +
+  geom_point() +
+  facet_grid(~organ) +
+  scale_x_log10()
+
+pac.l %>%
+  filter(!is.na(length), str_detect(organ,"epi|int")) %>%
+  ggplot(aes(x=treatment+.01,y=length,color=genotype)) +
+  geom_smooth(method="lm") +
+  geom_point() +
+  facet_grid(~organ) + 
+  scale_x_log10()
+```
+
+
+lm stats for petiole
+```{r}
+
+pac.lm.petiole <- pac.l %>%
+  filter(!is.na(length), str_detect(organ,"pet")) %>%
+  group_by(organ) %>%
+  nest() %>%
+  mutate(model.fit=map(data,function(x) lm(length~genotype*log10(treatment+.01),data=x)),
+         glance=map(model.fit, broom::tidy) )
+
+pac.lm.petiole.pvals <- pac.lm.petiole %>% 
+  unnest(glance) %>%
+  arrange(organ,term) %>%
+  select(organ, term, p.value, estimate, std.error)
+
+pac.lm.petiole.pvals %>%
+  filter(str_detect(term,fixed("genotypetie1:log10(treatment + 0.01)")))
+```
+
+lm stats for internode
+```{r}
+
+pac.lm.internode <- pac.l %>%
+  filter( !is.na(length), str_detect(organ,"epi|int")) %>%
+  group_by(organ,day) %>%
+  nest() %>%
+  mutate(model.fit=map(data,function(x) lm(length~genotype*log10(treatment+.01),data=x)),
+         glance=map(model.fit, broom::tidy) )
+
+pac.lm.internode.pvals <- pac.lm.internode %>% unnest(glance) %>%
+  arrange(organ,term) %>%
+  select(organ, term, p.value, estimate, std.error)
+
+pac.lm.internode.pvals %>% filter(str_detect(term,fixed("genotypetie1:log10(treatment + 0.01)")))
+```
+
+make combined summary table of lm stats
+
+```{r}
+lm.all <- bind_rows(list("internode.length ~ genotype*sqrt(treatment)"=ga.lm.internode.pvals,
+                    "petiole.length ~ genotype*sqrt(treatment)"=ga.lm.petiole.pvals,
+                    "internode.length ~ genotype*log10(treatment+.01)"=pac.lm.internode.pvals,
+                    "petiole.length ~ genotype*log10(treatment+.01)"=pac.lm.petiole.pvals),
+                    .id="model") %>%
+  mutate(treatment=ifelse(str_detect(model,"sqrt"), "GA3", "PAC")) %>%
+  select(treatment, model, everything()) %>%
+  arrange(treatment, model, organ)
+
+lm.all
+
+write_csv(lm.all, "lm stats.csv")
+```
+
+
+
+
